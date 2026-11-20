@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Registration System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="brand">
+                <div class="brand-badge">VRS</div>
+                <div>
+                    <h1 class="brand-title">Vehicle Registration System</h1>
+                    <p class="brand-subtitle">Java &middot; Hibernate ORM &middot; SQLite3 &middot; Spring Boot</p>
+                </div>
+            </div>
+            <div class="status-pill">
+                <span class="status-dot"></span>
+                SYSTEM ONLINE
+            </div>
+        </div>
+    </header>
+
+    <nav class="tabs-bar">
+        <div class="tabs-inner">
+            <button class="tab-btn active" data-tab="register-tab">REGISTER VEHICLE</button>
+            <button class="tab-btn" data-tab="directory-tab">VEHICLE DIRECTORY</button>
+            <button class="tab-btn" data-tab="orders-tab">SPARE PARTS ORDERS</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Tab 1: Register Vehicle -->
+        <section id="register-tab" class="tab-panel active">
+            <div class="grid-two-col">
+                <div class="card">
+                    <h2 class="card-title">NEW VEHICLE REGISTRATION</h2>
+                    <form id="registrationForm">
+                        <div class="form-section-label">OWNER / CUSTOMER DETAILS</div>
+
+                        <div class="form-group">
+                            <label for="existingCustomer">Existing Customer (optional)</label>
+                            <select id="existingCustomer">
+                                <option value="">-- Register as new customer --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="customerName">Full Name <span class="req">*</span></label>
+                                <input type="text" id="customerName" placeholder="e.g. Ravi Kumar" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="customerContact">Contact Number <span class="req">*</span></label>
+                                <input type="text" id="customerContact" placeholder="e.g. 9876543210" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="customerEmail">Email</label>
+                                <input type="email" id="customerEmail" placeholder="owner@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="customerAddress">Address</label>
+                                <input type="text" id="customerAddress" placeholder="City / Street">
+                            </div>
+                        </div>
+
+                        <div class="form-section-label">VEHICLE DETAILS</div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="registrationNumber">Registration Number <span class="req">*</span></label>
+                                <input type="text" id="registrationNumber" placeholder="E.G. PB10AB1234" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="chassisNumber">Chassis Number <span class="req">*</span></label>
+                                <input type="text" id="chassisNumber" placeholder="UNIQUE VIN / CHASSIS NO." required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="make">Make <span class="req">*</span></label>
+                                <input type="text" id="make" placeholder="e.g. Honda" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="model">Model <span class="req">*</span></label>
+                                <input type="text" id="model" placeholder="e.g. City" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="manufactureYear">Manufacture Year</label>
+                                <input type="number" id="manufactureYear" min="1950" max="2099" placeholder="e.g. 2023">
+                            </div>
+                            <div class="form-group">
+                                <label for="vehicleType">Vehicle Type</label>
+                                <select id="vehicleType">
+                                    <option value="Car">Car</option>
+                                    <option value="Motorcycle">Motorcycle</option>
+                                    <option value="SUV">SUV</option>
+                                    <option value="Truck">Truck</option>
+                                    <option value="Bus">Bus</option>
+                                    <option value="Van">Van</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="color">Color</label>
+                                <input type="text" id="color" placeholder="e.g. Silver">
+                            </div>
+                            <div class="form-group">
+                                <label for="engineNumber">Engine Number</label>
+                                <input type="text" id="engineNumber" placeholder="Engine serial no.">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">REGISTER VEHICLE</button>
+                        <div id="regMessage" class="feedback-msg" hidden></div>
+                    </form>
+                </div>
+
+                <div class="card summary-card">
+                    <h2 class="card-title">REGISTRY SUMMARY</h2>
+                    <div class="stat-list">
+                        <div class="stat-box">
+                            <span class="stat-value" id="statVehicles">0</span>
+                            <span class="stat-label">VEHICLES REGISTERED</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-value" id="statCustomers">0</span>
+                            <span class="stat-label">CUSTOMERS</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-value" id="statOrders">0</span>
+                            <span class="stat-label">SPARE PART ORDERS</span>
+                        </div>
+                    </div>
+                    <p class="summary-note">
+                        All registration numbers and chassis numbers are validated against duplicates before being committed to the database.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 2: Vehicle Directory -->
+        <section id="directory-tab" class="tab-panel">
+            <div class="card">
+                <div class="directory-header">
+                    <h2 class="card-title">VEHICLE DIRECTORY</h2>
+                    <div class="search-bar">
+                        <input type="text" id="searchKeyword" placeholder="Search by make or model...">
+                        <button type="button" id="searchBtn" class="btn-secondary">SEARCH</button>
+                        <button type="button" id="clearSearchBtn" class="btn-ghost">CLEAR</button>
+                    </div>
+                </div>
+                <div id="directoryMessage" class="feedback-msg" hidden></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>REG. NO.</th>
+                                <th>CHASSIS NO.</th>
+                                <th>MAKE / MODEL</th>
+                                <th>YEAR</th>
+                                <th>TYPE</th>
+                                <th>OWNER</th>
+                                <th>CONTACT</th>
+                                <th>REG. DATE</th>
+                                <th>ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vehicleTableBody">
+                            <tr>
+                                <td colspan="9" class="empty-cell">No vehicles registered yet.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 3: Spare Parts Orders -->
+        <section id="orders-tab" class="tab-panel">
+            <div class="grid-two-col orders-grid">
+                <div class="card">
+                    <h2 class="card-title">ORDER SPARE PART</h2>
+                    <form id="orderForm">
+                        <div class="form-group">
+                            <label for="orderVehicleId">Vehicle <span class="req">*</span></label>
+                            <select id="orderVehicleId" required>
+                                <option value="">-- Select a registered vehicle --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="partName">Part Name <span class="req">*</span></label>
+                                <input type="text" id="partName" placeholder="e.g. Brake Pad Set" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="quantity">Quantity <span class="req">*</span></label>
+                                <input type="number" id="quantity" min="1" value="1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="unitPrice">Unit Price</label>
+                            <input type="number" id="unitPrice" min="0" step="0.01" placeholder="e.g. 1250.00">
+                        </div>
+
+                        <button type="submit" class="btn-primary">PLACE ORDER</button>
+                        <div id="orderMessage" class="feedback-msg" hidden></div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">ORDER HISTORY</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>VEHICLE</th>
+                                    <th>PART</th>
+                                    <th>QTY</th>
+                                    <th>PRICE</th>
+                                    <th>STATUS</th>
+                                    <th>DATE</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orderTableBody">
+                                <tr>
+                                    <td colspan="7" class="empty-cell">No orders yet.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        Vehicle Registration &amp; Spare Parts Management System &mdash; Spring Boot &middot; Hibernate JPA &middot; SQLite
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
