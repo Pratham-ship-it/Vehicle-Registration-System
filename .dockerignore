@@ -1,0 +1,12 @@
+target/
+.tools/
+*.db
+*.db-journal
+*.log
+.git/
+.gitignore
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
